@@ -10,7 +10,8 @@
 
         <meu-painel :titulo="foto.titulo">
           <!-- componente imagem-responsiva com data-binding para assegurar mudança de propriedade -->
-          <imagem-responsiva :url="foto.url" :titulo="foto.titulo"/>
+          <imagem-responsiva :url="foto.url" :titulo="foto.titulo" v-meu-transform ="{incremento: 15, animate: true}"/>
+            <!-- Aplica diretriz para modificar DOM no elemento escolhido (el) -->
             <!--modifier nativo no @click para realozar o método no componente que não foi programado para isso -->
           <!--<meu-botao tipo="button" rotulo="REMOVER" @click.native="remove(foto)"/>-->
           <meu-botao tipo="button" rotulo="REMOVER" @botaoAtivado="remove(foto)"/>
