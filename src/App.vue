@@ -23,8 +23,8 @@ export default {
   data() {
 
     return {
-
-      routes
+      //apresentar no menu apenas as rotas que possuem menu: true
+       routes: routes.filter(route => route.menu)
     }
   }
 }

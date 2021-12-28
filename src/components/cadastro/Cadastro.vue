@@ -1,9 +1,12 @@
 
 <template>
-<!-- Associação de cada campo do formulário com uma propriedade do obj foto  -->
+<!-- Associação de cada campo do formulário com uma propriedade do obj foto -> muda-se para classe Foto  -->
   <div>
-    <h1 class="centralizado">Cadastro</h1>
+    <!-- Se o id da foto for preenchido, é uma alteração. Caso não, representa a adição de uma nova foto-->
+    <h1 v-if="foto._id" class="centralizado">Alteração</h1>
+    <h1 v-else class="centralizado">Inclusão</h1>
     <!--<h2 class="centralizado">{{foto.titulo}}</h2> -->
+
     <!-- Usar diretiva v-on (@) para observar elementos do DOM -->
     <!-- modifier equivalente ao preventDefault que cancela padraão do comportamento - impede recarrefar - SPA-->
     <form @submit.prevent="grava()">
@@ -28,8 +31,12 @@
     <!-- two way data binding: v-bind - da view para fonte de dados e :value - da fonte de dados para view { v-model é diretiva que cria interligações de mão dupla}--> 
       <div class="centralizado">
         <meu-botao rotulo="GRAVAR" tipo="submit"/>
-    <!--Clique no botão gera navegação para home -->        
-        <router-link to="/"><meu-botao rotulo="VOLTAR" tipo="button"/></router-link>
+
+    <!--Clique no botão gera navegação para home -       
+        <router-link to="/"><meu-botao rotulo="VOLTAR" tipo="button"/></router-link>  --> 
+
+        <router-link :to="{name: 'home'}"><meu-botao rotulo="VOLTAR" tipo="button"/></router-link>
+    <!-- to faz data binding com com router global para buscar rota, pelo valor do obj js com a propriedade name(nome da rota) -->
       </div>
 
     </form>
@@ -40,6 +47,12 @@
 
 import ImagemResponsiva from '../shared/imagem-responsiva/imagemResponsiva.vue'
 import Botao from '../shared/botao/Botao.vue';
+// importando a classe Foto
+import Foto from '../../domain/foto/Foto.js';
+//importando classe FotoService
+import FotoService from '../../domain/foto/FotoService';
+
+
 
 export default {
 
@@ -50,30 +63,56 @@ export default {
   },
     data() {
         return {
-
-        foto: {
-            titulo: '',
-            url: '', 
-            descricao: ''
-        }
+//importa classe usando suas instancias evitando ter que definir em Cadastro a estrutura de um objeto foto
+        foto: new Foto(),
+        id: this.$route.params.id //propriedade id como propriedade do objeto retornado pela função data
+//$route.params concede acesso ao parametro(id) pela rota
         }
     },
-// Cria método para teste dos dados gravados pelo formulário    
+    
     methods: {
 
-    grava() {
+        grava() {
+// Cria método para teste dos dados gravados pelo formulário
+            /*console.log(this.foto);  -- mostra no console as prop gravadas no obj foto */
 
-      console.log(this.foto);
-      // mostra no console as prop gravadas no obj foto
-
-      this.foto = {
+      /*this.foto = {
           titulo: '',
           url: '',
-          descricao: ''
-      };
+          descricao: '' */
+
+           /* this.resource
+     o método save realiza um POST por debaixo dos panos enviado os dados passado como parâmetro            
+                .save(this.foto)
+                .then(() => this.foto = new Foto(), err => console.log(err));    */
+
+            this.service
+                .cadastra(this.foto)
+                .then(() => {
+// Se a foto a ser alterada possui id,após sua alteração usuário é levado à home
+                if(this.id) this.$router.push({ name: 'home'});
+                this.foto = new Foto()
+                }, 
+                err => console.log(err)); //apresenta o erro no console
+      }
+    },
+
+    created() {
+/* método created para configurarmos nosso resource
+    this.resource = this.$resource('v1/fotos{/id}'); */
+
+     this.service = new FotoService(this.$resource);
+
+     if(this.id) {
+//testa se id possui valor,         
+      this.service
+        .busca(this.id)
+        .then(foto => this.foto = foto);
     }
   }
+
 }
+
 
 
 
