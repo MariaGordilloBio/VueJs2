@@ -11,6 +11,23 @@ import {routes} from './routes';
 //de requisições assíncronas 
 //ao mesmo tempo em que se integra com o ecossistema do Vue.
 
+// importando o VeeValidate - plugin para validação de dados
+import VeeValidate from 'vee-validate';
+//colocando pt como língua das msg de erro
+import msg from './pt_BR';
+
+Vue.use(VeeValidate, {
+  locale: 'pt_BR',
+  dictionary: {
+    pt_BR: {
+      messages: msg
+    }
+  }
+});
+
+// registrando o plugin 
+Vue.use(VeeValidate);
+
 Vue.use(VueRouter);
 //módulos criados precisam ser importados
 import './directives/Transform';

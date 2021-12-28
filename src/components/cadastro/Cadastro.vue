@@ -12,15 +12,20 @@
     <form @submit.prevent="grava()">
     <div class="controle">
         <label for="titulo">TÍTULO</label>
-        <input v-model.lazy = "foto.titulo" id="titulo" autocomplete="off">
-      </div>
-
+    <!-- validação dos campos com VeeValidate --> 
+        <input name = "titulo" v-model = "foto.titulo" id="titulo" autocomplete="off" v-validate data-vv-rules="required|min:3|max:30" data-vv-as="título">
+        <span class="erro"  v-show="errors.has('titulo')">{{ errors.first('titulo') }}</span> <!-- apresentar o erro ao usuário -->
+    <!-- v-show mostra erro somente quando existe. O object erros é criado 
+    automaticamente pelo VeeValidate e através do método has 
+    consulta se um input(name-identifica) falhou na validação. -->
+    </div>
       <div class="controle">
         <label for="url">URL</label>
     <!-- modificador lazy - a diretiva só "pegará" info quando quando o campo for enviado - não um caractere por vez - após o evento change-->
-        <input v-model.lazy = "foto.url" id="url" autocomplete="off">
+        <input name = "url" v-model= "foto.url" id="url" autocomplete="off" v-validate data-vv-rules="required">
     <!-- imagem respondiva recebe por v-bind as informações que precisa para renderizar -->
     <!-- v-show é semelhante à v-if - exibe ou oculta elemento de acordo com condição - muda estilo css do elemento para none -->
+        <span class="erro" v-show="errors.has('url')">{{ errors.first('url') }}</span>
         <imagem-responsiva v-show="foto.url" :url="foto.url" :titulo="foto.titulo"/>
       </div>
 
@@ -86,6 +91,15 @@ export default {
                 .save(this.foto)
                 .then(() => this.foto = new Foto(), err => console.log(err));    */
 
+//método para conferir se o dado é inválido
+             this.$validator
+/*VueValidator permite acesso ao obj $validator - método validateAll faz um procedimento disparando a validação de cada campo.
+Seu retorno é uma promise que devolve um boolean. Se for verdadeiro, é porque todos os campos passaram na validação. */            
+                .validateAll()
+                .then(success => {
+                if(success) {
+
+
             this.service
                 .cadastra(this.foto)
                 .then(() => {
@@ -94,6 +108,10 @@ export default {
                 this.foto = new Foto()
                 }, 
                 err => console.log(err)); //apresenta o erro no console
+            }
+
+         });
+
       }
     },
 
@@ -142,4 +160,7 @@ export default {
     text-align: center;
   }
 
+  .erro {
+    color: red;
+  }
 </style>
