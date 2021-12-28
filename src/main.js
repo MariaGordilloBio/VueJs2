@@ -25,6 +25,15 @@ Vue.use(VeeValidate, {
   }
 });
 
+//importando Bootstrap
+
+import 'bootstrap/dist/css/bootstrap.css';
+
+// importando CSS
+import './assets/css/teste.css';
+
+
+
 // registrando o plugin 
 Vue.use(VeeValidate);
 
