@@ -21,6 +21,8 @@ export default {
 </script>
 
 <style scoped>
+    
+
     .botao {
         display: inline-block;
         padding: 10px;

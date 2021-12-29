@@ -54,6 +54,8 @@ Vue.use(VueResource);
 // O valor passado para a propriedade root será a raiz de toda 
 //requisição que fizermos através de VueResource e seus artefatos como $http.
 
+Vue.http.options.root = process.env.API_URL ? process.env.API_URL : 'http://localhost:3000';
+
 Vue.http.options.root = 'http://localhost:3000';
 
 //view instance -- acessível a toda aplicação
